@@ -9,6 +9,7 @@ import (
 	"github.com/google/go-github/v45/github"
 
 	"github.com/spendesk/github-actions-exporter/pkg/config"
+	"github.com/spendesk/github-actions-exporter/pkg/utils"
 )
 
 var (
@@ -93,7 +94,9 @@ func periodicGithubFetcher() {
 		// Fetch workflows
 		non_empty_repos := make([]string, 0)
 		ww := make(map[string]map[int64]github.Workflow)
+		callCounter := 1
 		for _, repo := range repos_to_fetch {
+			utils.WaitEvery15Calls(&callCounter)
 			r := strings.Split(repo, "/")
 			workflows_for_repo := getAllWorkflowsForRepo(r[0], r[1])
 			if len(workflows_for_repo) == 0 {

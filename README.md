@@ -1,174 +1,183 @@
 # github-actions-exporter
+
 github-actions-exporter for prometheus
 
 ![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/spendeskplatform/github-actions-exporter)
 ![Docker Pulls](https://img.shields.io/docker/pulls/spendeskplatform/github-actions-exporter)
 [![Go Report Card](https://goreportcard.com/badge/github.com/Spendesk/github-actions-exporter)](https://goreportcard.com/report/github.com/Spendesk/github-actions-exporter)
 
-Container image : https://hub.docker.com/repository/docker/spendeskplatform/github-actions-exporter
+Container image : <https://hub.docker.com/repository/docker/spendeskplatform/github-actions-exporter>
 
 ## Information
+
 If you want to monitor a public repository, you must put the public_repo option in the repo scope of your github token or Github App Authentication.
 
-## Authentication 
+## Authentication
 
 Authentication can either via a Github Token or the Github App Authentication 3 parameters. When installing via the Helm Chart the authentication is provided via a secret.
 
-
-
 ## Options
-| Name | Flag | Env vars | Default | Description |
-|---|---|---|---|---|
-| Github Token | github_token, gt | GITHUB_TOKEN | - | Personnel Access Token |
-| Github App Id | app_id, gai | GITHUB_APP_ID |  | Github App Authentication App Id |
-| Github App Installation Id | app_installation_id, gii | GITHUB_APP_INSTALLATION_ID | - | Github App Authentication Installation Id |
-| Github App Private Key | app_private_key, gpk | GITHUB_APP_PRIVATE_KEY | - | Github App Authentication Private Key |
-| Github Refresh | github_refresh, gr | GITHUB_REFRESH | 30 | Refresh time Github Actions status in sec |
-| Github Organizations | github_orgas, go | GITHUB_ORGAS | - | List all organizations you want get informations. Format \<orga1>,\<orga2>,\<orga3> (like test1,test2) |
-| Github Repos | github_repos, grs | GITHUB_REPOS | - | [Optional] List all repositories you want get informations. Format \<orga>/\<repo>,\<orga>/\<repo2>,\<orga>/\<repo3> (like test/test). Defaults to all repositories owned by the organizations. |
-| Exporter port | port, p | PORT | 9999 | Exporter port |
-| Github Api URL | github_api_url, url | GITHUB_API_URL | api.github.com | Github API URL (primarily for Github Enterprise usage) |
-| Github Enterprise Name | enterprise_name | ENTERPRISE_NAME | "" | Enterprise name. Needed for enterprise endpoints (/enterprises/{ENTERPRISE_NAME}/*). Currently used to get Enterprise level tunners status |
-| Fields to export | export_fields | EXPORT_FIELDS | repo,id,node_id,head_branch,head_sha,run_number,workflow_id,workflow,event,status | A comma separated list of fields for workflow metrics that should be exported |
+
+| Name                         | Flag                            | Env vars                   | Default                                                                           | Description                                                                                                                                                                                     |
+| ---------------------------- | ------------------------------- | -------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Github Token                 | github_token, gt                | GITHUB_TOKEN               | -                                                                                 | Personnel Access Token                                                                                                                                                                          |
+| Github App Id                | app_id, gai                     | GITHUB_APP_ID              |                                                                                   | Github App Authentication App Id                                                                                                                                                                |
+| Github App Installation Id   | app_installation_id, gii        | GITHUB_APP_INSTALLATION_ID | -                                                                                 | Github App Authentication Installation Id                                                                                                                                                       |
+| Github App Private Key       | app_private_key, gpk            | GITHUB_APP_PRIVATE_KEY     | -                                                                                 | Github App Authentication Private Key                                                                                                                                                           |
+| Github Refresh               | github_refresh, gr              | GITHUB_REFRESH             | 30                                                                                | Refresh time Github Actions status in sec                                                                                                                                                       |
+| Seconds between 20 api calls | github_s_between_20_calls, gsbc | GITHUB_S_BETWEEN_20_CALLS  | 0                                                                                 | Helps reduce API call to preserve rate limit                                                                                                                                                    |
+| Github Organizations         | github_orgas, go                | GITHUB_ORGAS               | -                                                                                 | List all organizations you want get informations. Format \<orga1>,\<orga2>,\<orga3> (like test1,test2)                                                                                          |
+| Github Repos                 | github_repos, grs               | GITHUB_REPOS               | -                                                                                 | [Optional] List all repositories you want get informations. Format \<orga>/\<repo>,\<orga>/\<repo2>,\<orga>/\<repo3> (like test/test). Defaults to all repositories owned by the organizations. |
+| Exporter port                | port, p                         | PORT                       | 9999                                                                              | Exporter port                                                                                                                                                                                   |
+| Github Api URL               | github_api_url, url             | GITHUB_API_URL             | api.github.com                                                                    | Github API URL (primarily for Github Enterprise usage)                                                                                                                                          |
+| Github Enterprise Name       | enterprise_name                 | ENTERPRISE_NAME            | ""                                                                                | Enterprise name. Needed for enterprise endpoints (/enterprises/{ENTERPRISE_NAME}/\*). Currently used to get Enterprise level tunners status                                                     |
+| Fields to export             | export_fields                   | EXPORT_FIELDS              | repo,id,node_id,head_branch,head_sha,run_number,workflow_id,workflow,event,status | A comma separated list of fields for workflow metrics that should be exported                                                                                                                   |
 
 ## Exported stats
 
 ### github_workflow_run_status
+
 Gauge type
 
-**Result possibility**
+#### Result possibility
 
-| ID | Description |
-|---|---|
-| 0 | Failure |
-| 1 | Success |
-| 2 | Skipped |
-| 3 | In Progress |
-| 4 | Queued |
+| ID  | Description |
+| --- | ----------- |
+| 0   | Failure     |
+| 1   | Success     |
+| 2   | Skipped     |
+| 3   | In Progress |
+| 4   | Queued      |
 
-**Fields**
+#### Fields
 
-| Name | Description |
-|---|---|
-| event | Event type like push/pull_request/...|
-| head_branch | Branch name |
-| head_sha | Commit ID |
-| node_id | Node ID (github actions) (mandatory ??) |
-| repo | Repository like \<org>/\<repo> |
-| run_number | Build id for the repo (incremental id => 1/2/3/4/...) |
-| workflow_id | Workflow ID |
-| workflow | Workflow Name |
-| status | Workflow status (completed/in_progress) |
+| Name        | Description                                           |
+| ----------- | ----------------------------------------------------- |
+| event       | Event type like push/pull_request/...                 |
+| head_branch | Branch name                                           |
+| head_sha    | Commit ID                                             |
+| node_id     | Node ID (github actions) (mandatory ??)               |
+| repo        | Repository like \<org>/\<repo>                        |
+| run_number  | Build id for the repo (incremental id => 1/2/3/4/...) |
+| workflow_id | Workflow ID                                           |
+| workflow    | Workflow Name                                         |
+| status      | Workflow status (completed/in_progress)               |
 
 ### github_workflow_run_duration_ms
+
 Gauge type
 
 **Result possibility**
 
-| Gauge | Description |
-|---|---|
+| Gauge        | Description                                                                |
+| ------------ | -------------------------------------------------------------------------- |
 | milliseconds | Number of milliseconds that a specific workflow run took time to complete. |
 
 **Fields**
 
-| Name | Description |
-|---|---|
-| event | Event type like push/pull_request/...|
-| head_branch | Branch name |
-| head_sha | Commit ID |
-| node_id | Node ID (github actions) (mandatory ??) |
-| repo | Repository like \<org>/\<repo> |
-| run_number | Build id for the repo (incremental id => 1/2/3/4/...) |
-| workflow_id | Workflow ID |
-| workflow | Workflow Name |
-| status | Workflow status (completed/in_progress) |
+| Name        | Description                                           |
+| ----------- | ----------------------------------------------------- |
+| event       | Event type like push/pull_request/...                 |
+| head_branch | Branch name                                           |
+| head_sha    | Commit ID                                             |
+| node_id     | Node ID (github actions) (mandatory ??)               |
+| repo        | Repository like \<org>/\<repo>                        |
+| run_number  | Build id for the repo (incremental id => 1/2/3/4/...) |
+| workflow_id | Workflow ID                                           |
+| workflow    | Workflow Name                                         |
+| status      | Workflow status (completed/in_progress)               |
 
 ### github_job
+
 > :warning: **This is a duplicate of the `github_workflow_run_status` metric that will soon be deprecated, do not use anymore.**
 
 ### github_runner_status
+
 Gauge type
 (If you have self hosted runner)
 
 **Result possibility**
 
-| ID | Description |
-|---|---|
-| 0 | Offline |
-| 1 | Online |
+| ID  | Description |
+| --- | ----------- |
+| 0   | Offline     |
+| 1   | Online      |
 
 **Fields**
 
-| Name | Description |
-|---|---|
-| id | Runner id (incremental id) |
-| name | Runner name |
-| os | Operating system (linux/macos/windows) |
-| repo | Repository like \<org>/\<repo> |
-| status | Runner status (online/offline) |
-| busy | Runner busy or not (true/false) |
+| Name   | Description                            |
+| ------ | -------------------------------------- |
+| id     | Runner id (incremental id)             |
+| name   | Runner name                            |
+| os     | Operating system (linux/macos/windows) |
+| repo   | Repository like \<org>/\<repo>         |
+| status | Runner status (online/offline)         |
+| busy   | Runner busy or not (true/false)        |
 
 ### github_runner_organization_status
+
 Gauge type
 (If you have self hosted runner for an organization)
 
 **Result possibility**
 
-| ID | Description |
-|---|---|
-| 0 | Offline |
-| 1 | Online |
+| ID  | Description |
+| --- | ----------- |
+| 0   | Offline     |
+| 1   | Online      |
 
 **Fields**
 
-| Name | Description |
-|---|---|
-| id | Runner id (incremental id) |
-| name | Runner name |
-| os | Operating system (linux/macos/windows) |
-| orga | Organization name |
-| status | Runner status (online/offline) |
-| busy | Runner busy or not (true/false) |
+| Name   | Description                            |
+| ------ | -------------------------------------- |
+| id     | Runner id (incremental id)             |
+| name   | Runner name                            |
+| os     | Operating system (linux/macos/windows) |
+| orga   | Organization name                      |
+| status | Runner status (online/offline)         |
+| busy   | Runner busy or not (true/false)        |
 
 ### github_runner_enterprise_status
+
 Gauge type
 (If you have self hosted runner for an enterprise)
 
 **Result possibility**
 
-| ID | Description |
-|---|---|
-| 0 | Offline |
-| 1 | Online |
+| ID  | Description |
+| --- | ----------- |
+| 0   | Offline     |
+| 1   | Online      |
 
 **Fields**
 
-| Name | Description |
-|---|---|
-| id | Runner id (incremental id) |
-| name | Runner name |
-| os | Operating system (linux/macos/windows) |
+| Name | Description                            |
+| ---- | -------------------------------------- |
+| id   | Runner id (incremental id)             |
+| name | Runner name                            |
+| os   | Operating system (linux/macos/windows) |
 
 ### github_workflow_usage_seconds
+
 Gauge type
 (If you have private repositories that use GitHub-hosted runners)
 
 **Result possibility**
 
-| Gauge | Description |
-|---|---|
+| Gauge   | Description                                                                              |
+| ------- | ---------------------------------------------------------------------------------------- |
 | seconds | Number of billable seconds used by a specific workflow during the current billing cycle. |
 
 **Fields**
 
-| Name | Description |
-|---|---|
-| id | Workflow id (incremental id) |
-| node_id | Node ID (github actions) |
-| name | workflow name |
-| os | Operating system (linux/macos/windows) |
-| repo | Repository like \<org>/\<repo> |
-| status | Workflow status |
+| Name    | Description                            |
+| ------- | -------------------------------------- |
+| id      | Workflow id (incremental id)           |
+| node_id | Node ID (github actions)               |
+| name    | workflow name                          |
+| os      | Operating system (linux/macos/windows) |
+| repo    | Repository like \<org>/\<repo>         |
+| status  | Workflow status                        |
 
 Example:
 
@@ -216,23 +225,27 @@ admin:org
 
 ### Authentication Errors
 
-#### Invalid Github Token 
- if token is invalid then `401 Bad credentials` will be returned on github API error and displayed in an error message. 
+#### Invalid Github Token
 
-#### Invalid Github App configuration 
- if the app id or app installation id value is incorrect then messages like the following are displayed:
- ```
- could not refresh installation id 12345678's token: request &{Method:POST URL:https://api.github.com/app/installations/12345678/access_tokens
- ``` 
+if token is invalid then `401 Bad credentials` will be returned on github API error and displayed in an error message.
 
- if the github_app_private_key is incorrect then errors like the following are displayed. 
- ```
-  Error: Client creation failed.authentication failed: could not parse private key: Invalid Key: Key must be PEM encoded PKCS1 or PKCS8 private ke
- ```
+#### Invalid Github App configuration
 
-###  Secret actions-exporter 
+if the app id or app installation id value is incorrect then messages like the following are displayed:
 
-In the kubernetes deployment authentication is passed via a kubernetes secret: 
+```
+could not refresh installation id 12345678's token: request &{Method:POST URL:https://api.github.com/app/installations/12345678/access_tokens
+```
+
+if the github_app_private_key is incorrect then errors like the following are displayed.
+
+```
+ Error: Client creation failed.authentication failed: could not parse private key: Invalid Key: Key must be PEM encoded PKCS1 or PKCS8 private ke
+```
+
+### Secret actions-exporter
+
+In the kubernetes deployment authentication is passed via a kubernetes secret:
 
 ```
 kind: Secret
@@ -248,7 +261,7 @@ data:
 #  github_app_private_key: DDDDDDD
 ```
 
-Or more probably using an external secret manager. Here is an example of using External Secrets with the EKS Secret Manager to define the authentication in a secret: 
+Or more probably using an external secret manager. Here is an example of using External Secrets with the EKS Secret Manager to define the authentication in a secret:
 
 ```
 apiVersion: 'kubernetes-client.io/v1'

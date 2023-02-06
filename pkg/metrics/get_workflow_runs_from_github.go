@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/spendesk/github-actions-exporter/pkg/config"
+	"github.com/spendesk/github-actions-exporter/pkg/utils"
 
 	"github.com/google/go-github/v45/github"
 )
@@ -106,7 +107,9 @@ func getRunUsage(owner string, repo string, runId int64) *github.WorkflowRunUsag
 // getWorkflowRunsFromGithub - return informations and status about a workflow
 func getWorkflowRunsFromGithub() {
 	for {
+		callCounter := 1
 		for _, repo := range repositories {
+			utils.WaitEvery15Calls(&callCounter)
 			r := strings.Split(repo, "/")
 			runs := getRecentWorkflowRuns(r[0], r[1])
 
