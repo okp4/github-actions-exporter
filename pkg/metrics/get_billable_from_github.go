@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/spendesk/github-actions-exporter/pkg/config"
+	"github.com/spendesk/github-actions-exporter/pkg/utils"
 
 	"github.com/google/go-github/github"
 	"github.com/prometheus/client_golang/prometheus"
@@ -26,8 +27,10 @@ var (
 // getBillableFromGithub - return billable informations for MACOS, WINDOWS and UBUNTU runners.
 func getBillableFromGithub() {
 	for {
+		callCounter := 1
 		for _, repo := range repositories {
 			for k, v := range workflows[repo] {
+				utils.WaitEvery15Calls(&callCounter)
 				r := strings.Split(repo, "/")
 
 				for {
