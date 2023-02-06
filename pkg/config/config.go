@@ -5,15 +5,16 @@ import "github.com/urfave/cli/v2"
 var (
 	// Github - github configuration
 	Github struct {
-		AppID             int64  `split_words:"true"`
-		AppInstallationID int64  `split_words:"true"`
-		AppPrivateKey     string `split_words:"true"`
-		Token             string
-		Refresh           int64
-		Repositories      cli.StringSlice
-		Organizations     cli.StringSlice
-		APIURL            string
-		CacheSizeBytes    int64
+		AppID                 int64  `split_words:"true"`
+		AppInstallationID     int64  `split_words:"true"`
+		AppPrivateKey         string `split_words:"true"`
+		Token                 string
+		Refresh               int64
+		SecondsBetween15calls int
+		Repositories          cli.StringSlice
+		Organizations         cli.StringSlice
+		APIURL                string
+		CacheSizeBytes        int64
 	}
 	Metrics struct {
 		FetchWorkflowRunUsage bool
@@ -70,6 +71,14 @@ func InitConfiguration() []cli.Flag {
 			Value:       30,
 			Usage:       "Refresh time Github Pipelines status in sec",
 			Destination: &Github.Refresh,
+		},
+		&cli.IntFlag{
+			Name:        "github_s_between_15_calls",
+			Aliases:     []string{"gsbc"},
+			EnvVars:     []string{"GITHUB_S_BETWEEN_15_CALLS"},
+			Value:       0,
+			Usage:       "Time (seconds) between 15 API calls",
+			Destination: &Github.SecondsBetween15calls,
 		},
 		&cli.StringFlag{
 			Name:        "github_api_url",
